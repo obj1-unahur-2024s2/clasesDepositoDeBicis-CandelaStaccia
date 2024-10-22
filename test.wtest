@@ -1,0 +1,67 @@
+import bicicletas.*
+import accesorios.*
+import depositos.*
+
+describe "Tests de bicicletas" {
+    const bici1 = new Bicicleta(rodado = 28, largo = 150, marca = "Olmo", accesorios = [farolito])
+
+    const canasto1 = new Canasto(volumen = 8)
+    const morral1 = new Morral(largo = 21, tieneOjoDeGato = true)
+    const bici2 = new Bicicleta(rodado = 26, largo = 110, marca = "Legnano", accesorios = [farolito, canasto1, morral1])
+
+    const morral2 = new Morral(largo = 6, tieneOjoDeGato = false)
+    const bici3 = new Bicicleta(rodado = 20, largo = 90, marca = "Legnano", accesorios = [morral2])
+
+    const dep1 = new Depositos(bicis = [bici1, bici2, bici3])
+    const dep2 = new Depositos(bicis = [bici1, bici2])
+
+  test "test de bici1" {
+    assert.equals(85, bici1.altura())
+    assert.equals(34, bici1.velocidadDeCrucero())
+    assert.equals(0, bici1.carga())
+    assert.equals(14.5, bici1.peso())
+    assert.that(bici1.tieneLuz())
+    assert.equals(1, bici1.cuantosLivianos())
+  }
+
+  test "test de bici2" {
+    assert.equals(80, bici2.altura())
+    assert.equals(28, bici2.velocidadDeCrucero())
+    assert.equals(23, bici2.carga())
+    assert.equals(15.5, bici2.peso())
+    assert.that(bici2.tieneLuz())
+    assert.equals(2, bici2.cuantosLivianos())
+  }
+
+  test "test de bici3" {
+    assert.equals(65, bici3.altura())
+    assert.equals(22, bici3.velocidadDeCrucero())
+    assert.equals(2, bici3.carga())
+    assert.equals(11.2, bici3.peso())
+    assert.notThat(bici3.tieneLuz())
+    assert.equals(0, bici3.cuantosLivianos())
+  }
+
+  test "test de deposito 1" {
+    assert.equals([bici1, bici2], dep1.bicisRapidas())
+    assert.equals(#{"Olmo", "Legnano"}, dep1.marcas())
+    assert.notThat(dep1.esNocturno())
+    assert.that(dep1.hayParaLlevar(10))
+    assert.notThat(dep1.hayParaLlevar(50))
+  }
+
+  test "test de deposito 2" {
+    assert.equals([bici1, bici2], dep2.bicisRapidas())
+    assert.equals(#{"Olmo", "Legnano"}, dep2.marcas())
+    assert.that(dep2.esNocturno())
+    assert.that(dep2.hayParaLlevar(10))
+    assert.notThat(dep2.hayParaLlevar(50))
+  }
+
+  test "mas tests de deposito 1" {
+    assert.equals("Olmo", dep1.marcaDeLaMasRapida())
+    assert.equals(0, dep1.cargaTotalDeLasLargas()) //ninguna mide mas de 170
+    assert.equals(0, dep1.bicisSinAccesorios()) //todas tienen accesorios
+    assert.that(dep1.bicisCompanierasDe(bici2).isEmpty()) //la bici2 difiere en mas de 10cm con las demas
+  }
+} //faltan tests de desafios
